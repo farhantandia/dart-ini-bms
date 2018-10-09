@@ -9,17 +9,16 @@ import 'package:test/test.dart';
 /// This is the path from the folder containing this file to the root of the project
 final String rootFolder = '.';
 
-void main () {
+void main() {
   group('', () {
     test('When I call new Config()\n\t Then I get a new blank Config',
-      () => when(newConfig).then(isBlankConfig)
-    );
-    test('When I call new Config.fromString()\n\t Then I get a new populated Config',
-      () => when(newConfigFromString).then(isPopulatedConfig)
-    );
-    test('When I call new Config.fromStrings()\n\t Then I get a new populated Config',
-      () => when(newConfigFromStrings).then(isPopulatedConfig)
-    );
+        () => when(newConfig).then(isBlankConfig));
+    test(
+        'When I call new Config.fromString()\n\t Then I get a new populated Config',
+        () => when(newConfigFromString).then(isPopulatedConfig));
+    test(
+        'When I call new Config.fromStrings()\n\t Then I get a new populated Config',
+        () => when(newConfigFromStrings).then(isPopulatedConfig));
   });
 
   group('Given a loaded Config\n\t', () {
@@ -29,23 +28,17 @@ void main () {
       config = given(newConfigFromString);
     });
     test('Then the default options are present',
-      () => config.then(defaultOptionsArePresent)
-    );
+        () => config.then(defaultOptionsArePresent));
     test('Then the default options are correct',
-      () => config.then(defaultOptionsAreCorrect)
-    );
-    test('Then the sections are present',
-      () => config.then(sectionsArePresent)
-    );
-    test('Then the sections are correct',
-      () => config.then(sectionsAreCorrect)
-    );
+        () => config.then(defaultOptionsAreCorrect));
+    test(
+        'Then the sections are present', () => config.then(sectionsArePresent));
+    test(
+        'Then the sections are correct', () => config.then(sectionsAreCorrect));
     test('Then the section options are present',
-      () => config.then(sectionOptionsArePresent)
-    );
+        () => config.then(sectionOptionsArePresent));
     test('Then the section options are correct',
-      () => config.then(sectionOptionsAreCorrect)
-    );
+        () => config.then(sectionOptionsAreCorrect));
   });
 
   group('Given a blank Config\n\t', () {
@@ -55,20 +48,15 @@ void main () {
       config = given(newConfigFromString);
     });
     test('When I add a section\n\t Then the section is present',
-      () => config.then(addSection).then(addedSectionIsPresent)
-    );
+        () => config.then(addSection).then(addedSectionIsPresent));
     test('When I add an option\n\t Then the option is present',
-      () => config.then(addOption).then(addedOptionIsPresent)
-    );
+        () => config.then(addOption).then(addedOptionIsPresent));
     test('When I add an option\n\t Then the option is correct',
-      () => config.then(addOption).then(addedOptionIsCorrect)
-    );
+        () => config.then(addOption).then(addedOptionIsCorrect));
     test('When I add a default option\n\t Then the default option is present',
-      () => config.then(addDefaultOption).then(addedDefaultOptionIsPresent)
-    );
+        () => config.then(addDefaultOption).then(addedDefaultOptionIsPresent));
     test('When I add a default option\n\t Then the default option is correct',
-      () => config.then(addDefaultOption).then(addedDefaultOptionIsCorrect)
-    );
+        () => config.then(addDefaultOption).then(addedDefaultOptionIsCorrect));
   });
 
   group('Given a loaded Config\n\t', () {
@@ -77,11 +65,11 @@ void main () {
     setUp(() {
       config = given(newConfigFromString);
     });
-    test('When I create a Config from a toString() call\n\t Then the new Config matches the callee',
-      () => config.then(createConfigFromConfigToString).then(bothConfigsMatch)
-    );
+    test(
+        'When I create a Config from a toString() call\n\t Then the new Config matches the callee',
+        () =>
+            config.then(createConfigFromConfigToString).then(bothConfigsMatch));
   });
-
 }
 
 typedef dynamic Clause();
@@ -120,7 +108,8 @@ void sectionsArePresent(Config config) {
 }
 
 void sectionsAreCorrect(Config config) {
-  expect(config.sections(), unorderedEquals(['section', 'long section', 'մնմեմ']));
+  expect(
+      config.sections(), unorderedEquals(['section', 'long section', 'մնմեմ']));
 }
 
 void sectionOptionsArePresent(Config config) {
@@ -178,11 +167,12 @@ void addedDefaultOptionIsPresent(Config config) {
 }
 
 void addedDefaultOptionIsCorrect(Config config) {
-  expect(config.get("default", "new default option"), equals("new default value"));
+  expect(
+      config.get("default", "new default option"), equals("new default value"));
 }
 
 List<Config> createConfigFromConfigToString(Config config) =>
-  [config, new Config.fromString(config.toString())];
+    [config, new Config.fromString(config.toString())];
 
 Future<List<Config>> createConfigFromPythonEcho(Config config) {
   // TODO: Resolve difference in handling of default section.
@@ -191,26 +181,27 @@ Future<List<Config>> createConfigFromPythonEcho(Config config) {
 
   config.removeSection("default");
 
-  return invokePythonEcho(config).then((String data) => [config, new Config.fromString(data)]);
+  return invokePythonEcho(config)
+      .then((String data) => [config, new Config.fromString(data)]);
 }
 
 Future<String> invokePythonEcho(Config config) {
-  Future<String> listen(stream) =>
-    stream.transform(utf8.decoder)
+  Future<String> listen(stream) => stream
+      .transform(utf8.decoder)
       .fold('', (String accumulated, String current) => accumulated + current);
 
   return Process.start('python', ["${rootFolder}/tool/ini_echo.py"])
-    .then((Process process) {
-      process.stdin.write(config.toString());
-      process.stdin.close();
+      .then((Process process) {
+    process.stdin.write(config.toString());
+    process.stdin.close();
 
-      listen(process.stderr).then(isNoError);
-      return listen(process.stdout);
-    });
+    listen(process.stderr).then(isNoError);
+    return listen(process.stdout);
+  });
 }
 
 Matcher isConfigEqual(Config expected) =>
-  predicate((Config result) => result.toString() == expected.toString());
+    predicate((Config result) => result.toString() == expected.toString());
 
 void bothConfigsMatch(List<Config> configs) {
   expect(configs[1], isConfigEqual(configs[0]));
@@ -220,7 +211,8 @@ void isNoError(String error) {
   expect(error, equals(''));
 }
 
-final String sampleConfig = new File("${rootFolder}/test/config.ini").readAsStringSync();
+final String sampleConfig =
+    new File("${rootFolder}/test/config.ini").readAsStringSync();
 final List<String> sampleConfigLines = new LineSplitter().convert(sampleConfig);
 
 // vim: set ai et sw=2 syntax=dart :

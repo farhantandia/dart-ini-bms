@@ -8,10 +8,10 @@ class _Parser {
   static final RegExp _entryPattern = new RegExp(r"^([^=]+)=(.*?)$");
 
   static Iterable<String> _removeBlankLines(Iterable<String> source) =>
-    source.where((String line) => ! _blankLinePattern.hasMatch(line));
+      source.where((String line) => !_blankLinePattern.hasMatch(line));
 
   static Iterable<String> _removeComments(Iterable<String> source) =>
-    source.where((String line) => ! _commentPattern.hasMatch(line));
+      source.where((String line) => !_commentPattern.hasMatch(line));
 
   /// Joins the lines that have been continued over multiple lines.
   ///
@@ -25,19 +25,18 @@ class _Parser {
     String line = '';
 
     for (String current in source) {
-      if ( _lineContinuationPattern.hasMatch(current) ) {
+      if (_lineContinuationPattern.hasMatch(current)) {
         // The leading whitespace makes this a long header field.
         // It is not part of the value.
         line += current.replaceFirst(_lineContinuationPattern, "");
-      }
-      else {
-        if ( line != '' ) {
+      } else {
+        if (line != '') {
           result.add(line);
         }
         line = current;
       }
     }
-    if ( line != '' ) {
+    if (line != '') {
       result.add(line);
     }
 
@@ -48,15 +47,11 @@ class _Parser {
   List<String> _strings;
 
   _Parser.fromString(String string)
-    : this.fromStrings(new LineSplitter().convert(string));
+      : this.fromStrings(new LineSplitter().convert(string));
 
   _Parser.fromStrings(List<String> strings)
-    : _strings =
-        _joinLongHeaderFields(
-          _removeComments(
-            _removeBlankLines(strings)
-          )
-        );
+      : _strings =
+            _joinLongHeaderFields(_removeComments(_removeBlankLines(strings)));
 
   /// Returns a Config from the cleaned list of [_strings].
   Config toConfig() {
@@ -65,16 +60,14 @@ class _Parser {
 
     for (String current in _strings) {
       Match is_section = _sectionPattern.firstMatch(current);
-      if ( is_section != null ) {
+      if (is_section != null) {
         section = is_section[1].trim();
         result.addSection(section);
-      }
-      else {
+      } else {
         Match is_entry = _entryPattern.firstMatch(current);
-        if ( is_entry != null ) {
+        if (is_entry != null) {
           result.set(section, is_entry[1].trim(), is_entry[2].trim());
-        }
-        else {
+        } else {
           throw new Exception('Unrecognized line: "${current}"');
         }
       }

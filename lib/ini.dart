@@ -18,7 +18,6 @@ part 'src/model.dart';
 part 'src/parser.dart';
 
 abstract class Config {
-
   factory Config() {
     return new _ConfigImpl();
   }
