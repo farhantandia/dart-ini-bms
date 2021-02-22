@@ -22,7 +22,7 @@ void main() {
   });
 
   group('Given a loaded Config\n\t', () {
-    Future<Config> config;
+    late Future<Config> config;
 
     setUp(() {
       config = given(newConfigFromString);
@@ -42,7 +42,7 @@ void main() {
   });
 
   group('Given a blank Config\n\t', () {
-    Future<Config> config;
+    late Future<Config> config;
 
     setUp(() {
       config = given(newConfigFromString);
@@ -60,7 +60,7 @@ void main() {
   });
 
   group('Given a loaded Config\n\t', () {
-    Future<Config> config;
+    late Future<Config> config;
 
     setUp(() {
       config = given(newConfigFromString);
@@ -186,7 +186,7 @@ Future<List<Config>> createConfigFromPythonEcho(Config config) {
 }
 
 Future<String> invokePythonEcho(Config config) {
-  Future<String> listen(stream) => stream
+  Future<String>? listen(stream) => stream
       .transform(utf8.decoder)
       .fold('', (String accumulated, String current) => accumulated + current);
 
@@ -195,8 +195,8 @@ Future<String> invokePythonEcho(Config config) {
     process.stdin.write(config.toString());
     process.stdin.close();
 
-    listen(process.stderr).then(isNoError);
-    return listen(process.stdout);
+    listen(process.stderr)!.then(isNoError);
+    return listen(process.stdout)!;
   });
 }
 

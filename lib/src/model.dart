@@ -16,11 +16,11 @@ class _ConfigImpl implements Config {
   String toString() {
     StringBuffer buffer = new StringBuffer();
 
-    buffer.writeAll(items('default').map((e) => "${e[0]} = ${e[1]}"), "\n");
+    buffer.writeAll(items('default')!.map((e) => "${e[0]} = ${e[1]}"), "\n");
     buffer.write("\n");
     for (String section in sections()) {
       buffer.write("[${section}]\n");
-      buffer.writeAll(items(section).map((e) => "${e[0]} = ${e[1]}"), "\n");
+      buffer.writeAll(items(section)!.map((e) => "${e[0]} = ${e[1]}"), "\n");
       buffer.write("\n");
     }
 
@@ -66,8 +66,8 @@ class _ConfigImpl implements Config {
   /// Returns a list of options available in the section called [name].
   ///
   ///     print(config.options("updates").first);
-  Iterable<String> options(String name) {
-    Map<String, String> s = this._getSection(name);
+  Iterable<String>? options(String name) {
+    Map<String, String>? s = this._getSection(name);
     return s != null ? s.keys : null;
   }
 
@@ -75,23 +75,23 @@ class _ConfigImpl implements Config {
   ///
   ///     if (config.hasOption("updates", "automatic")) { ... }
   bool hasOption(String name, String option) {
-    Map<String, String> s = this._getSection(name);
+    Map<String, String>? s = this._getSection(name);
     return s != null ? s.containsKey(option) : false;
   }
 
   /// Returns the value associated with [option] in the section called [name].
   ///
   ///     print(config.get("updates", "automatic"));
-  String get(String name, String option) {
-    Map<String, String> s = this._getSection(name);
+  String? get(String name, String option) {
+    Map<String, String>? s = this._getSection(name);
     return s != null ? s[option] : null;
   }
 
   /// Returns a list of option (name, value) pairs in the section called [name].
   ///
   ///     print(config.get("updates").first.first);
-  List<List<String>> items(String name) {
-    Map<String, String> s = this._getSection(name);
+  List<List<String?>>? items(String name) {
+    Map<String, String>? s = this._getSection(name);
     return s != null
         ? s.keys.map((String key) => [key, s[key]]).toList()
         : null;
@@ -103,7 +103,7 @@ class _ConfigImpl implements Config {
   ///
   ///     config.set("updates", "automatic", "true");
   void set(String name, String option, String value) {
-    Map<String, String> s = this._getSection(name);
+    Map<String, String>? s = this._getSection(name);
     if (s == null) {
       throw new Exception('NoSectionError');
     }
@@ -117,7 +117,7 @@ class _ConfigImpl implements Config {
   ///
   ///     config.removeOption("updates", "automatic");
   bool removeOption(String section, String option) {
-    Map<String, String> s = this._getSection(section);
+    Map<String, String>? s = this._getSection(section);
     if (s != null) {
       if (s.containsKey(option)) {
         s.remove(option);
@@ -150,7 +150,7 @@ class _ConfigImpl implements Config {
   /// The string 'default' (case insensitive) will return the default section.
   ///
   ///     print(config._getSection("updates").keys.first);
-  Map<String, String> _getSection(String section) {
+  Map<String, String>? _getSection(String section) {
     if (section.toLowerCase() == 'default') {
       return _defaults;
     }
