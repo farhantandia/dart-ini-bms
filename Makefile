@@ -8,7 +8,15 @@ PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 PROJECT_NAME = dart-ini
 
 IMAGE_NAME = google/dart:2.12-beta
-DOCKER_RUN = docker run --rm --user $(shell id -u) --volume $(CURDIR):/project --volume $(CURDIR)/.pub-cache:/.pub-cache --workdir /project -ti $(IMAGE_NAME)
+DOCKER_RUN = docker run \
+			 --rm \
+			 --user $(shell id -u) \
+			 --volume $(CURDIR):/project \
+			 --volume $(CURDIR)/.pub-cache:/.pub-cache \
+			 --workdir /project \
+			 --interactive \
+			 --tty \
+			 $(IMAGE_NAME)
 
 #################################################################################
 # COMMANDS                                                                      #
