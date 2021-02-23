@@ -21,7 +21,7 @@ class _Parser {
   ///
   ///     return _joinLongHeaderFields(strings);
   static List<String> _joinLongHeaderFields(Iterable<String> source) {
-    List<String> result = new List<String>();
+    List<String> result = [];
     String line = '';
 
     for (String current in source) {
@@ -59,14 +59,14 @@ class _Parser {
     String section = 'default';
 
     for (String current in _strings) {
-      Match is_section = _sectionPattern.firstMatch(current);
+      Match? is_section = _sectionPattern.firstMatch(current);
       if (is_section != null) {
-        section = is_section[1].trim();
+        section = is_section[1]!.trim();
         result.addSection(section);
       } else {
-        Match is_entry = _entryPattern.firstMatch(current);
+        Match? is_entry = _entryPattern.firstMatch(current);
         if (is_entry != null) {
-          result.set(section, is_entry[1].trim(), is_entry[2].trim());
+          result.set(section, is_entry[1]!.trim(), is_entry[2]!.trim());
         } else {
           throw new Exception('Unrecognized line: "${current}"');
         }

@@ -66,7 +66,7 @@ abstract class Config {
   /// Returns a list of options available in the section called [name].
   ///
   ///     print(config.options("updates").first);
-  Iterable<String> options(String name);
+  Iterable<String>? options(String name);
 
   /// Returns true if [option] exists within the section called [name].
   ///
@@ -76,12 +76,12 @@ abstract class Config {
   /// Returns the value associated with [option] in the section called [name].
   ///
   ///     print(config.get("updates", "automatic"));
-  String get(String name, String option);
+  String? get(String name, String option);
 
   /// Returns a list of option (name, value) pairs in the section called [name].
   ///
   ///     print(config.get("updates").first.first);
-  List<List<String>> items(String name);
+  List<List<String?>>? items(String name);
 
   /// Sets the [option] to [value] in the section called [name].
   ///
