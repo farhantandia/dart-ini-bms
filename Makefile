@@ -8,7 +8,15 @@ PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 PROJECT_NAME = dart-ini
 
 IMAGE_NAME = google/dart:2.12-beta
-DOCKER_RUN = docker run --rm --user $(shell id -u) --volume $(CURDIR):/project --volume $(CURDIR)/.pub-cache:/.pub-cache --workdir /project -ti $(IMAGE_NAME)
+DOCKER_RUN = docker run \
+			 --rm \
+			 --user $(shell id -u) \
+			 --volume $(CURDIR):/project \
+			 --volume $(CURDIR)/.pub-cache:/.pub-cache \
+			 --workdir /project \
+			 --interactive \
+			 --tty \
+			 $(IMAGE_NAME)
 
 #################################################################################
 # COMMANDS                                                                      #
@@ -29,7 +37,8 @@ upgrade : install
 test : install
 	$(DOCKER_RUN) pub run test --platform vm --timeout 30s --concurrency=6 --test-randomize-ordering-seed=random --reporter=expanded
 
-## Publish new version
+## Publish new version.
+## This will make you sad, you'll have to exec into the container and curl the callback url.
 publish : install
 	$(DOCKER_RUN) pub publish
 
