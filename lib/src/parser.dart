@@ -68,7 +68,7 @@ class _Parser {
         if (is_entry != null) {
           result.set(section, is_entry[1]!.trim(), is_entry[2]!.trim());
         } else {
-          throw new Exception('Unrecognized line: "${current}"');
+          // throw new Exception('Unrecognized line: "${current}"');
         }
       }
     }
