@@ -1,5 +1,8 @@
 Dart INI
 --------
+This library is forked from https://gitlab.com/matthewfranglen/dart-ini and I clone from my gitlab to make a modification for my flutter project.
+
+Modification is only to skip unidentified format inside the .ini file as shown in the last commit.
 
 This library deals with reading and writing ini files. This implements the standard as defined here:
 
